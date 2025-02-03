@@ -1,28 +1,19 @@
 #!/bin/bash
 
-# Updating the system before configuration
-echo "Updating the system before configuration..."
-sudo apt update -y && sudo apt upgrade -y
-
 # Define colors for convenience
 YELLOW="\e[33m"
 CYAN="\e[36m"
 BLUE="\e[34m"
 GREEN="\e[32m"
 RED="\e[31m"
-PINK="\e[35m"
 NC="\e[0m"
 
-# Function to install required packages
-install_dependencies() {
-    echo -e "${GREEN}Installing required packages...${NC}"
-    sudo apt update && sudo apt install -y curl iptables build-essential git wget lz4 jq make gcc nano automake autoconf tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip screen
-}
-
-# Display the logo
+# 1) Display the logo at the start
+#    (Move greeting or any other info here as needed)
 curl -s https://raw.githubusercontent.com/Evenorchik/evenorlogo/main/evenorlogo.sh | bash
+echo ""
 
-# Function for loading animation
+# Function for loading animation (optional usage)
 animate_loading() {
     for ((i = 1; i <= 5; i++)); do
         printf "\r${GREEN}Loading the menu${NC}."
@@ -37,9 +28,27 @@ animate_loading() {
     echo ""
 }
 
-# Call the loading animation
-animate_loading
-echo ""
+# 2) Show the menu first, before any updates/installs
+echo -e "${CYAN}Choose an action:${NC}"
+echo "1) Install node"
+echo "2) Check node status"
+echo "3) Check node points"
+echo "4) Remove node"
+echo "5) Exit"
+read -p "Enter your choice: " CHOICE
+
+# -------------------------------------------------------------------------------
+# Functions definitions
+# -------------------------------------------------------------------------------
+
+# (Will only be called if user chooses "Install node" first)
+
+# Function to install required packages
+install_dependencies() {
+    echo -e "${GREEN}Installing required packages...${NC}"
+    sudo apt update -y && sudo apt upgrade -y
+    sudo apt install -y curl iptables build-essential git wget lz4 jq make gcc nano automake autoconf tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev tar clang bsdmainutils ncdu unzip screen
+}
 
 # Function to install the node
 install_node() {
@@ -58,7 +67,7 @@ install_node() {
     # Make the file executable
     chmod +x pop
 
-    # Create a new screen session
+    # Create a new screen session in detached mode
     screen -S pipe2 -dm
 
     echo -e "${YELLOW}Enter your Solana public key:${NC}"
@@ -109,15 +118,9 @@ remove_node() {
     echo -e "${GREEN}The node was successfully removed!${NC}"
 }
 
-# Main menu (no pop-up, just terminal input)
-echo -e "${CYAN}Choose an action:${NC}"
-echo "1) Install node"
-echo "2) Check node status"
-echo "3) Check node points"
-echo "4) Remove node"
-echo "5) Exit"
-
-read -p "Enter your choice: " CHOICE
+# -------------------------------------------------------------------------------
+# Menu execution
+# -------------------------------------------------------------------------------
 
 case $CHOICE in
     1)
@@ -139,4 +142,3 @@ case $CHOICE in
         echo -e "${RED}Invalid choice. Exiting the program.${NC}"
         ;;
 esac
-
