@@ -9,11 +9,10 @@ RED="\e[31m"
 NC="\e[0m"
 
 # 1) Display the logo at the start
-#    (Move greeting or any other info here as needed)
 curl -s https://raw.githubusercontent.com/Evenorchik/evenorlogo/main/evenorlogo.sh | bash
 echo ""
 
-# Function for loading animation (optional usage)
+# Function for loading animation
 animate_loading() {
     for ((i = 1; i <= 5; i++)); do
         printf "\r${GREEN}Loading the menu${NC}."
@@ -28,20 +27,19 @@ animate_loading() {
     echo ""
 }
 
-# 2) Show the menu first, before any updates/installs
+# 2) Show the menu
 echo -e "${CYAN}Choose an action:${NC}"
 echo "1) Install node"
 echo "2) Check node status"
 echo "3) Check node points"
 echo "4) Remove node"
-echo "5) Exit"
+echo "5) Update node"
+echo "6) Exit"
 read -p "Enter your choice: " CHOICE
 
 # -------------------------------------------------------------------------------
 # Functions definitions
 # -------------------------------------------------------------------------------
-
-# (Will only be called if user chooses "Install node" first)
 
 # Function to install required packages
 install_dependencies() {
@@ -54,20 +52,14 @@ install_dependencies() {
 install_node() {
     echo -e "${BLUE}Starting node installation...${NC}"
 
-    # Update and install dependencies
     install_dependencies
 
-    # Create a directory for cache and navigate there
     mkdir -p ~/pipe/download_cache
     cd ~/pipe || exit
 
-    # Download the pop file
-    wget https://dl.pipecdn.app/v0.2.2/pop
-
-    # Make the file executable
+    wget https://dl.pipecdn.app/v0.2.3/pop
     chmod +x pop
 
-    # Create a new screen session in detached mode
     screen -S pipe2 -dm
 
     echo -e "${YELLOW}Enter your Solana public key:${NC}"
@@ -79,7 +71,6 @@ install_node() {
     echo -e "${YELLOW}Enter the max disk size in GB (integer):${NC}"
     read -r DISK
 
-    # Run the command with parameters (Solana public key, RAM, max disk)
     screen -S pipe2 -X stuff "./pop --ram $RAM --max-disk $DISK --cache-dir ~/pipe/download_cache --pubKey $SOLANA_PUB_KEY\n"
     sleep 3
     screen -S pipe2 -X stuff "e4313e9d866ee3df\n"
@@ -103,16 +94,43 @@ check_points() {
     cd ~ || exit
 }
 
+# Function to update the node
+update_node() {
+    echo -e "${BLUE}Updating node to version 0.2.3...${NC}"
+
+    # Stop pop process
+    echo -e "${YELLOW}Stopping pop service...${NC}"
+    ps aux | grep '[p]op' | awk '{print $2}' | xargs kill
+
+    cd ~/pipe || exit
+
+    echo -e "${YELLOW}Removing old version of pop...${NC}"
+    rm -f pop
+
+    echo -e "${YELLOW}Downloading new version of pop...${NC}"
+    wget -O pop "https://dl.pipecdn.app/v0.2.3/pop"
+
+    chmod +x pop
+
+    sudo systemctl daemon-reload
+
+    screen -S pipe2 -X quit
+    sleep 2
+
+    screen -S pipe2 -dm ./pop
+    sleep 3
+    screen -S pipe2 -X stuff "y\n"
+
+    echo -e "${GREEN}Update completed!${NC}"
+}
+
 # Function to remove the node
 remove_node() {
     echo -e "${BLUE}Removing the node...${NC}"
 
     pkill -f pop
-
-    # Terminate and remove the 'pipe2' screen session
     screen -S pipe2 -X quit
 
-    # Remove node files
     sudo rm -rf ~/pipe
 
     echo -e "${GREEN}The node was successfully removed!${NC}"
@@ -136,6 +154,9 @@ case $CHOICE in
         remove_node
         ;;
     5)
+        update_node
+        ;;
+    6)
         echo -e "${CYAN}Exiting the program.${NC}"
         ;;
     *)
