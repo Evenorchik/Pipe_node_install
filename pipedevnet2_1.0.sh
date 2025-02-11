@@ -57,7 +57,7 @@ install_node() {
     mkdir -p ~/pipe/download_cache
     cd ~/pipe || exit
 
-    wget https://dl.pipecdn.app/v0.2.3/pop
+    wget https://dl.pipecdn.app/v0.2.4/pop
     chmod +x pop
 
     screen -S pipe2 -dm
@@ -96,7 +96,7 @@ check_points() {
 
 # Function to update the node
 update_node() {
-    echo -e "${BLUE}Updating node to version 0.2.3...${NC}"
+    echo -e "${BLUE}Updating node to version 0.2.4...${NC}"
 
     # Stop pop process
     echo -e "${YELLOW}Stopping pop service...${NC}"
@@ -108,7 +108,7 @@ update_node() {
     rm -f pop
 
     echo -e "${YELLOW}Downloading new version of pop...${NC}"
-    wget -O pop "https://dl.pipecdn.app/v0.2.3/pop"
+    wget -O pop "https://dl.pipecdn.app/v0.2.4/pop"
 
     chmod +x pop
 
