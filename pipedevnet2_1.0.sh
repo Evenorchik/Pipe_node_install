@@ -34,7 +34,8 @@ echo "2) Check node status"
 echo "3) Check node points"
 echo "4) Remove node"
 echo "5) Update node"
-echo "6) Exit"
+echo "6) Получить реферальный код"
+echo "7) Exit"
 read -p "Enter your choice: " CHOICE
 
 # -------------------------------------------------------------------------------
@@ -60,6 +61,7 @@ install_node() {
     wget https://dl.pipecdn.app/v0.2.4/pop
     chmod +x pop
 
+    # Create detached screen session for pop process
     screen -S pipe2 -dm
 
     echo -e "${YELLOW}Enter your Solana public key:${NC}"
@@ -71,8 +73,15 @@ install_node() {
     echo -e "${YELLOW}Enter the max disk size in GB (integer):${NC}"
     read -r DISK
 
+    # Start pop with provided parameters
     screen -S pipe2 -X stuff "./pop --ram $RAM --max-disk $DISK --cache-dir ~/pipe/download_cache --pubKey $SOLANA_PUB_KEY\n"
     sleep 3
+
+    # Привязка ноды к рефералке
+    screen -S pipe2 -X stuff "./pop --signup-by-referral-route 90ef3e76fb967d41\n"
+    sleep 3
+
+    # Отправка кода (например, подтверждение или ключ)
     screen -S pipe2 -X stuff "e4313e9d866ee3df\n"
 
     echo -e "${GREEN}Installation and launch process completed!${NC}"
@@ -136,6 +145,14 @@ remove_node() {
     echo -e "${GREEN}The node was successfully removed!${NC}"
 }
 
+# Function to generate referral code
+generate_referral() {
+    echo -e "${BLUE}Generating referral code...${NC}"
+    cd ~/pipe || exit
+    ./pop --gen-referral-route
+    cd ~ || exit
+}
+
 # -------------------------------------------------------------------------------
 # Menu execution
 # -------------------------------------------------------------------------------
@@ -157,6 +174,9 @@ case $CHOICE in
         update_node
         ;;
     6)
+        generate_referral
+        ;;
+    7)
         echo -e "${CYAN}Exiting the program.${NC}"
         ;;
     *)
