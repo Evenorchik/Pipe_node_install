@@ -34,7 +34,7 @@ echo "2) Check node status"
 echo "3) Check node points"
 echo "4) Remove node"
 echo "5) Update node"
-echo "6) Получить реферальный код"
+echo "6) Obtain referral code"
 echo "7) Exit"
 read -p "Enter your choice: " CHOICE
 
@@ -58,7 +58,7 @@ install_node() {
     mkdir -p ~/pipe/download_cache
     cd ~/pipe || exit
 
-    wget https://dl.pipecdn.app/v0.2.4/pop
+    wget https://dl.pipecdn.app/v0.2.5/pop
     chmod +x pop
 
     # Create detached screen session for pop process
@@ -105,7 +105,7 @@ check_points() {
 
 # Function to update the node
 update_node() {
-    echo -e "${BLUE}Updating node to version 0.2.4...${NC}"
+    echo -e "${BLUE}Updating node to version 0.2.5...${NC}"
 
     # Stop pop process
     echo -e "${YELLOW}Stopping pop service...${NC}"
@@ -117,7 +117,7 @@ update_node() {
     rm -f pop
 
     echo -e "${YELLOW}Downloading new version of pop...${NC}"
-    wget -O pop "https://dl.pipecdn.app/v0.2.4/pop"
+    wget -O pop "https://dl.pipecdn.app/v0.2.5/pop"
 
     chmod +x pop
 
