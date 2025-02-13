@@ -58,7 +58,7 @@ install_node() {
     mkdir -p ~/pipe/download_cache
     cd ~/pipe || exit
 
-    wget https://dl.pipecdn.app/v0.2.5/pop
+    curl -L -o pop "https://dl.pipecdn.app/v0.2.5/pop"
     chmod +x pop
 
     # Create detached screen session for pop process
