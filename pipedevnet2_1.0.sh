@@ -58,7 +58,7 @@ install_node() {
     mkdir -p ~/pipe/download_cache
     cd ~/pipe || exit
 
-    curl -L -o pop "https://dl.pipecdn.app/v0.2.5/pop"
+    curl -L -o pop "https://dl.pipecdn.app/v0.2.8/pop"
     chmod +x pop
 
     # Create detached screen session for pop process
@@ -105,7 +105,7 @@ check_points() {
 
 # Function to update the node
 update_node() {
-    echo -e "${BLUE}Updating node to version 0.2.5...${NC}"
+    echo -e "${BLUE}Updating node to version 0.2.8...${NC}"
 
     # Stop pop process
     echo -e "${YELLOW}Stopping pop service...${NC}"
@@ -117,7 +117,7 @@ update_node() {
     rm -f pop
 
     echo -e "${YELLOW}Downloading new version of pop...${NC}"
-    wget -O pop "https://dl.pipecdn.app/v0.2.5/pop"
+    wget -O pop "https://dl.pipecdn.app/v0.2.8/pop"
 
     chmod +x pop
 
